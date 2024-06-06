@@ -6,17 +6,32 @@ use App\Entity\Advice;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private $userPasswordHasher;
+
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher)
+    {
+        $this->userPasswordHasher = $userPasswordHasher;
+    }
+
     public function load(ObjectManager $manager): void
     {
+        $admin = new User();
+        $admin->setUsername('Admin');
+        $admin->setRoles(["ROLE_ADMIN"]);
+        $admin->setPassword($this->userPasswordHasher->hashPassword($admin, "password"));
+        $admin->setPostal_code(12345);
+        $manager->persist($admin);
+
         for ($i = 1; $i <=10; $i++){
             $user = new User();
             $user->setUsername('User' . $i);
-            $user->setPassword($i);
-            $user->setPostalCode(12345);
-            $user->setAdmin(false);
+            $user->setRoles(["ROLE_USER"]);
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, "password"));
+            $user->setPostal_code(12345);
 
             $manager->persist($user);
         }
