@@ -19,7 +19,6 @@ final class PutAdvice{
 
     public function __construct(
         private SerializerInterface $serializer,
-        private AdviceRepository $adviceRepository,
         private EntityManagerInterface $em
     )
     {
