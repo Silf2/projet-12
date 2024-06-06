@@ -23,13 +23,24 @@ final class GetAllAdvices
     {
     }
 
-    #[Route('/api/advices', name: 'getAllAdvices', methods: ['GET'])]
+    #[Route('/api/conseil', name: 'getAllAdvices', methods: ['GET'])]
     public function __invoke(): JsonResponse
     {
         $advices = $this->adviceRepository->findAll();
-        $jsonAdvices = $this->serializer->serialize($advices, 'json');
+        $currentMonth = (new \DateTime())->format('m');
+        $applicableAdvices = [];
 
-        return new JsonResponse($jsonAdvices, Response::HTTP_OK, [], true);
+        foreach ($advices as $advice){
+            if (in_array($currentMonth, $advice->getMonths())){
+                $applicableAdvices[] = $advice;
+            }
+        }
+
+        if (!empty($applicableAdvices)){
+            $jsonAdvices = $this->serializer->serialize($applicableAdvices, 'json');
+            return new JsonResponse($jsonAdvices, Response::HTTP_OK, [], true);
+        }
+        return new JsonResponse(null, Response::HTTP_NOT_FOUND);
     }
 }
 

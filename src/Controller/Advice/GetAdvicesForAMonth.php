@@ -18,7 +18,7 @@ final class GetAdvicesForAMonth
     {
     }
 
-    #[Route('/api/advice/{month}', name: 'adviceOnAMonth', methods: ['GET'])]
+    #[Route('/api/conseil/{month}', name: 'adviceOnAMonth', methods: ['GET'])]
     public function __invoke(int $month): JsonResponse
     {
         $advices = $this->adviceRepository->findAll();
