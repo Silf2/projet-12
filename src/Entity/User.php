@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
@@ -17,6 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Groups(["getUser"])]
     private ?string $username = null;
 
     /**
@@ -31,7 +33,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    private ?string $postal_code = null;
+    #[ORM\Column]
+    #[Groups(["getUser"])]
+    private ?string $postalCode = null;
 
     public function getId(): ?int
     {
@@ -110,9 +114,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Get the value of postal_code
      */ 
-    public function getPostal_code()
+    public function getPostalCode()
     {
-        return $this->postal_code;
+        return $this->postalCode;
     }
 
     /**
@@ -120,9 +124,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @return  self
      */ 
-    public function setPostal_code($postal_code)
+    public function setPostalCode($postalCode)
     {
-        $this->postal_code = $postal_code;
+        $this->postalCode = $postalCode;
 
         return $this;
     }
