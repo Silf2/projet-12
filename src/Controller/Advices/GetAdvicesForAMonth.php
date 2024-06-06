@@ -28,12 +28,11 @@ class GetAdvicesForAMonth extends AbstractController
 
         foreach ($advices as $advice){
             if (in_array($month, $advice->getMonths())){
-                dump($advice->getMonths());
                 $applicableAdvices[] = $advice;
             }
         }
 
-        if (!empty($appplicableAdvices)){
+        if (!empty($applicableAdvices)){
             $jsonAdvices = $this->serializer->serialize($applicableAdvices, 'json');
             return new JsonResponse($jsonAdvices, Response::HTTP_OK, [], true);
         }

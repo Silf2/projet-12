@@ -17,8 +17,8 @@ class Advice
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $months = null;
+    #[ORM\Column(type: Types::JSON)]
+    private array $months = [];
 
     public function getId(): ?int
     {
@@ -39,12 +39,12 @@ class Advice
 
     public function getMonths(): array
     {
-        return json_decode($this->months, true);
+        return $this->months;
     }
 
-    public function setMonths(array $months): self
+    public function setMonths(array $months): static
     {
-        $this->months = json_encode($months);
+        $this->months = $months;
 
         return $this;
     }
