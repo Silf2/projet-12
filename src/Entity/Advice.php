@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AdviceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AdviceRepository::class)]
 class Advice
@@ -15,9 +16,11 @@ class Advice
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(["getAdvice"])]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::JSON)]
+    #[Groups(["getAdvice"])]
     private array $months = [];
 
     public function getId(): ?int
