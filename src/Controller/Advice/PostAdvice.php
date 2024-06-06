@@ -23,7 +23,7 @@ final class PostAdvice
     }
 
     #[IsGranted('ROLE_ADMIN')]
-    #[Route('/api/admin/conseil', name: 'addAdvice', methods: ['POST'])]
+    #[Route('/api/conseil', name: 'addAdvice', methods: ['POST'])]
     public function __invoke(Request $request): JsonResponse
     {
         $advice = $this->serializer->deserialize($request->getContent(), Advice::class, 'json');
