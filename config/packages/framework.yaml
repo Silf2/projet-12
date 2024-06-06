@@ -11,7 +11,7 @@ framework:
 
     http_client:
         scoped_clients:
-            meteo_client:
+            weather_client:
                 base_uri: '%env(METEO_API_URL)%'
 
 when@test:
