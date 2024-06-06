@@ -3,13 +3,14 @@
 namespace App\Controller\Advice;
 
 use App\Repository\AdviceRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class GetAdvicesForAMonth extends AbstractController
+#[AsController]
+class GetAdvicesForAMonth
 {
     private $adviceRepository;
     private $serializer;
