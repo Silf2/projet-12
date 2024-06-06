@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[AsController]
-class GetAdvicesForAMonth
+final class GetAdvicesForAMonth
 {
     private $adviceRepository;
     private $serializer;
