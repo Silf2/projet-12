@@ -12,13 +12,10 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[AsController]
 final class GetAdvicesForAMonth
 {
-    private $adviceRepository;
-    private $serializer;
-
-    public function __construct(AdviceRepository $adviceRepository, SerializerInterface $serializer)
+    public function __construct(
+        private AdviceRepository $adviceRepository, 
+        private SerializerInterface $serializer)
     {
-        $this->adviceRepository = $adviceRepository;
-        $this->serializer = $serializer;
     }
 
     #[Route('/api/advice/{month}', name: 'adviceOnAMonth', methods: ['GET'])]
