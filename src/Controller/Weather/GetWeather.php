@@ -2,6 +2,7 @@
 
 namespace App\Controller\Weather;
 
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,7 +25,9 @@ final class GetWeather{
     public function __invoke(): JsonResponse
     {
         $token = $this->tokenStorage->getToken();
-        $postalCode = $token->getUser()->getPostalCode();
+        /** @var User $user */
+        $user = $token->getUser();
+        $postalCode = $user->getPostalCode();
         $idCache = "weather_data". $postalCode;
 
         try {
