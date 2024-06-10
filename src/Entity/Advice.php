@@ -6,6 +6,7 @@ use App\Repository\AdviceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AdviceRepository::class)]
 class Advice
@@ -16,10 +17,12 @@ class Advice
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank]
     #[Groups(["getAdvice"])]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::JSON)]
+    #[Assert\NotBlank]
     #[Groups(["getAdvice"])]
     private array $months = [];
 
