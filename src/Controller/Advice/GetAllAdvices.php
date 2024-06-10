@@ -19,8 +19,7 @@ final class GetAllAdvices
     public function __construct(
         private AdviceRepository $adviceRepository,
         private SerializerInterface $serializer,
-        private TagAwareCacheInterface $cachePool/*, 
-        private HttpClientInterface $weatherClient*/
+        private TagAwareCacheInterface $cachePool
     )
     {
     }
