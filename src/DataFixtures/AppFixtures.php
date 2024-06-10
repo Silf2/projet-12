@@ -22,7 +22,7 @@ class AppFixtures extends Fixture
         $admin->setUsername('Admin');
         $admin->setRoles(["ROLE_ADMIN"]);
         $admin->setPassword($this->userPasswordHasher->hashPassword($admin, "password"));
-        $admin->setPostalCode(12345);
+        $admin->setPostalCode(49100);
         $manager->persist($admin);
 
         for ($i = 1; $i <=10; $i++){
@@ -30,7 +30,7 @@ class AppFixtures extends Fixture
             $user->setUsername('User' . $i);
             $user->setRoles(["ROLE_USER"]);
             $user->setPassword($this->userPasswordHasher->hashPassword($user, "password"));
-            $user->setPostalCode(12345);
+            $user->setPostalCode(49100);
 
             $manager->persist($user);
         }
