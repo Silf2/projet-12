@@ -10,31 +10,34 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+
 #[AsController]
 final class GetWeather{
     
     public function __construct(
-        private HttpClientInterface $weatherClient,
-        private string $weatherRoute,
+        private HttpClientInterface $httpClient,
         private TagAwareCacheInterface $cachePool,
         private TokenStorageInterface $tokenStorage
     )
     {
     }
 
-    #[Route('api/meteo', name: 'getWeather', methods: ['GET'])]
-    public function __invoke(): JsonResponse
+    #[Route('api/meteo/{postalCode?}', name: 'getWeatherForTown', methods: ['GET'])]
+    public function __invoke(?string $postalCode = null): JsonResponse
     {
-        $token = $this->tokenStorage->getToken();
-        /** @var User $user */
-        $user = $token->getUser();
-        $postalCode = $user->getPostalCode();
+        if($postalCode === null){
+            $token = $this->tokenStorage->getToken();
+            /** @var User $user */
+            $user = $token->getUser();
+            $postalCode = $user->getPostalCode();
+        }
+
         $idCache = "weather_data". $postalCode;
 
         try {
             $weatherData = $this->cachePool->get($idCache, function() use($postalCode){
-                $url = sprintf($this->weatherRoute, $postalCode);
-                $response = $this->weatherClient->request('GET', $url);
+                $url = sprintf('http://api.openweathermap.org/data/2.5/weather?zip=%s,FR&units=metric&appid=9e7d1c6f55a80b48d3da4f3c3b412ab9', $postalCode);
+                $response = $this->httpClient->request('GET', $url);
                 $statusCode = $response->getStatusCode();
                 
                 if ($statusCode === 200) {

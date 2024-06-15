@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 #[AsController]
-final class GetAdvicesForAMonth
+final class GetAdvices
 {
     public function __construct(
         private AdviceRepository $adviceRepository, 
@@ -21,10 +21,14 @@ final class GetAdvicesForAMonth
     {
     }
 
-    #[Route('/api/conseil/{month}', name: 'adviceOnAMonth', methods: ['GET'])]
-    public function __invoke(int $month): JsonResponse
+    #[Route('/api/conseil/{month?}', name: 'adviceOnAMonth', methods: ['GET'])]
+    public function __invoke(?int $month = null): JsonResponse
     {
-        $idCache = "getAllAdvices-" . $month;
+        if ($month === null){
+            $month = (new \DateTime())->format('m');
+        }
+
+        $idCache = "getAdvices-" . $month;
 
         $jsonAdvices = $this->cachePool->get($idCache, function() use ($month){
             $advices = $this->adviceRepository->findAll();
