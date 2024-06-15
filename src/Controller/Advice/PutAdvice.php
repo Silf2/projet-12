@@ -28,10 +28,7 @@ final class PutAdvice{
     #[Route('api/conseil/{id}', name: "updateAdvice", methods: ['PUT'])]
     public function __invoke(Request $request, Advice $currentAdvice): JsonResponse
     {        
-        $updatedAdvice = $this->serializer->deserialize($request->getContent(), 
-                Advice::class,
-                'json',
-                [AbstractNormalizer::OBJECT_TO_POPULATE => $currentAdvice]);
+        $updatedAdvice = $this->serializer->deserialize($request->getContent(), Advice::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $currentAdvice, 'groups' => 'getAdvice'],);
         $months = $updatedAdvice->getMonths();
         
         foreach ($months as $month) {

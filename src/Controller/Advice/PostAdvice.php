@@ -29,7 +29,7 @@ final class PostAdvice
     #[Route('/api/conseil', name: 'addAdvice', methods: ['POST'])]
     public function __invoke(Request $request): JsonResponse
     {
-        $advice = $this->serializer->deserialize($request->getContent(), Advice::class, 'json');
+        $advice = $this->serializer->deserialize($request->getContent(), Advice::class, 'json', ['groups' => 'getAdvice']);
         $months = $advice->getMonths();
     
         foreach ($months as $month) {

@@ -30,7 +30,7 @@ final class PostUser
     #[Route('/api/user', name: "createUser", methods: ['POST'])]
     public function __invoke(Request $request): JsonResponse
     {
-        $user = $this->serializer->deserialize($request->getContent(), User::class, 'json');
+        $user = $this->serializer->deserialize($request->getContent(), User::class, 'json', ['groups' => 'postUser']);
         $user->setRoles(["ROLE_USER"]);
 
         $password = $user->getPassword();

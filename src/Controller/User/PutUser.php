@@ -32,7 +32,7 @@ final class PutUser{
         $updatedUser = $this->serializer->deserialize($request->getContent(), 
                 User::class,
                 'json',
-                [AbstractNormalizer::OBJECT_TO_POPULATE => $currentUser]);
+                [AbstractNormalizer::OBJECT_TO_POPULATE => $currentUser, 'groups' => 'postUser']);
             
         $password = $updatedUser->getPassword();
         $updatedUser->setPassword($this->passwordHasher->hashPassword($updatedUser, $password));
