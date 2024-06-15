@@ -14,7 +14,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 final class GetWeather{
     
     public function __construct(
-        private HttpClientInterface $httpClient,
+        private HttpClientInterface $weatherClient,
+        private string $weatherRoute,
         private TagAwareCacheInterface $cachePool,
         private TokenStorageInterface $tokenStorage
     )
@@ -32,8 +33,8 @@ final class GetWeather{
 
         try {
             $weatherData = $this->cachePool->get($idCache, function() use($postalCode){
-                $url = sprintf('http://api.openweathermap.org/data/2.5/weather?zip=%s,FR&units=metric&appid=9e7d1c6f55a80b48d3da4f3c3b412ab9', $postalCode);
-                $response = $this->httpClient->request('GET', $url);
+                $url = sprintf($this->weatherRoute, $postalCode);
+                $response = $this->weatherClient->request('GET', $url);
                 $statusCode = $response->getStatusCode();
                 
                 if ($statusCode === 200) {
