@@ -20,7 +20,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank]
-    #[Groups(["getUser"])]
+    #[Groups(["getUser", "postUser"])]
     private ?string $username = null;
 
     /**
@@ -35,11 +35,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Assert\NotBlank]
     #[Assert\Length(min:8, minMessage:"Le mot de passe doit contenir au moins 8 caractères")]
+    #[Groups(["postUser"])]
     private ?string $password = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    #[Groups(["getUser"])]
+    #[Groups(["getUser", "postUser"])]
     private ?string $postalCode = null;
 
     public function getId(): ?int
