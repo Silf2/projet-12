@@ -11,6 +11,8 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[AsController]
 final class PostAdvice
@@ -19,6 +21,7 @@ final class PostAdvice
     public function __construct(
         private SerializerInterface $serializer,
         private EntityManagerInterface $em,
+        private ValidatorInterface $validator
     ){
     }
 
@@ -27,6 +30,18 @@ final class PostAdvice
     public function __invoke(Request $request): JsonResponse
     {
         $advice = $this->serializer->deserialize($request->getContent(), Advice::class, 'json');
+        $months = $advice->getMonths();
+    
+        foreach ($months as $month) {
+            if ($month < 1 || $month > 12) {
+                throw new \InvalidArgumentException("Le mois $month n'est pas valide. Les mois doivent être des nombres entre 1 et 12.");
+            }
+        }
+
+        if (count($months) !== count(array_unique($months))) {
+            throw new \InvalidArgumentException("Vous avez spécifié plusieurs fois le même mois.");
+        }
+
         $this->em->persist($advice);
         $this->em->flush();
 

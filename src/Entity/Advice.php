@@ -23,6 +23,7 @@ class Advice
 
     #[ORM\Column(type: Types::JSON)]
     #[Assert\NotBlank]
+    #[Assert\Json()]
     #[Groups(["getAdvice"])]
     private array $months = [];
 

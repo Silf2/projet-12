@@ -32,6 +32,17 @@ final class PutAdvice{
                 Advice::class,
                 'json',
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $currentAdvice]);
+        $months = $updatedAdvice->getMonths();
+        
+        foreach ($months as $month) {
+            if ($month < 1 || $month > 12) {
+                throw new \InvalidArgumentException("Le mois $month n'est pas valide. Les mois doivent être des nombres entre 1 et 12.");
+            }
+        }
+
+        if (count($months) !== count(array_unique($months))) {
+            throw new \InvalidArgumentException("Vous avez spécifié plusieurs fois le même mois.");
+        }
         
         $this->em->persist($updatedAdvice);
         $this->em->flush();

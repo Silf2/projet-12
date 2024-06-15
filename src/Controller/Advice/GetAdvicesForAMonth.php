@@ -6,6 +6,7 @@ use App\Repository\AdviceRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
@@ -42,9 +43,10 @@ final class GetAdvicesForAMonth
             return null;
         });
 
-        if ($jsonAdvices !== null){
-            return new JsonResponse($jsonAdvices, Response::HTTP_OK, [], true);
+        if ($jsonAdvices === null){
+            throw new NotFoundHttpException("Le conseil n'existe pas.");
         }
-        return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        
+        return new JsonResponse($jsonAdvices, Response::HTTP_OK, [], true);
     }
 }
