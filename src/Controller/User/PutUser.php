@@ -3,6 +3,7 @@
 namespace App\Controller\User;
 
 use App\Entity\User;
+use App\Validator\ValidateArguments;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[AsController]
 final class PutUser{
@@ -20,7 +22,8 @@ final class PutUser{
     public function __construct(
         private SerializerInterface $serializer,
         private EntityManagerInterface $em,
-        private UserPasswordHasherInterface $passwordHasher
+        private UserPasswordHasherInterface $passwordHasher,
+        private ValidateArguments $validateArguments
     )
     {
     }
@@ -35,6 +38,10 @@ final class PutUser{
                 [AbstractNormalizer::OBJECT_TO_POPULATE => $currentUser, 'groups' => 'postUser']);
             
         $password = $updatedUser->getPassword();
+        
+        $this->validateArguments->validateAndHandleErrors($updatedUser);
+
+
         $updatedUser->setPassword($this->passwordHasher->hashPassword($updatedUser, $password));
         $this->em->persist($updatedUser);
         $this->em->flush();

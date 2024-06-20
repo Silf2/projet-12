@@ -3,6 +3,7 @@
 namespace App\Controller\User;
 
 use App\Entity\User;
+use App\Validator\ValidateArguments;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,7 @@ final class PostUser
         private EntityManagerInterface $em,
         private UrlGeneratorInterface $urlGenerator,
         private UserPasswordHasherInterface $passwordHasher,
-        private ValidatorInterface $validator
+        private ValidateArguments $validateArguments
     ) {
     }
 
@@ -32,27 +33,9 @@ final class PostUser
     {
         $user = $this->serializer->deserialize($request->getContent(), User::class, 'json', ['groups' => 'postUser']);
         $user->setRoles(["ROLE_USER"]);
-
         $password = $user->getPassword();
-        $passwordConstraints = new Assert\Collection([
-            'password' => [
-                new Assert\NotBlank(),
-                new Assert\Length(['min' => 8, 'minMessage' => 'Le mot de passe doit contenir au moins 8 caractères.']),
-                new Assert\Regex(['pattern' => '/[A-Z]/', 'message' => 'Le mot de passe doit contenir au moins une majuscule.']),
-            ]
-        ]);
 
-        $input = ['password' => $password];
-        $violations = $this->validator->validate($input, $passwordConstraints);
-
-        if (count($violations) > 0) {
-            $errors = [];
-            foreach ($violations as $violation) {
-                $errors[] = $violation->getMessage();
-            }
-
-            return new JsonResponse(['errors' => $errors], Response::HTTP_BAD_REQUEST);
-        }
+        $this->validateArguments->validateAndHandleErrors($user);
 
         $user->setPassword($this->passwordHasher->hashPassword($user, $password));
         $this->em->persist($user);
