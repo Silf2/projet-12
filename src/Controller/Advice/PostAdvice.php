@@ -12,7 +12,6 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[AsController]
 final class PostAdvice

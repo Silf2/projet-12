@@ -13,8 +13,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[AsController]
 final class PostUser

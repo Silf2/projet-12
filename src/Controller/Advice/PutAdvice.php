@@ -14,7 +14,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[AsController]
 final class PutAdvice{
