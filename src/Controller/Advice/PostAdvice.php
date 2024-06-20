@@ -30,16 +30,15 @@ final class PostAdvice
     public function __invoke(Request $request): JsonResponse
     {
         $advice = $this->serializer->deserialize($request->getContent(), Advice::class, 'json', ['groups' => 'getAdvice']);
-        $months = $advice->getMonths();
+        $errors = $this->validator->validate($advice);
     
-        foreach ($months as $month) {
-            if ($month < 1 || $month > 12) {
-                throw new \InvalidArgumentException("Le mois $month n'est pas valide. Les mois doivent être des nombres entre 1 et 12.");
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = $error->getMessage();
             }
-        }
-
-        if (count($months) !== count(array_unique($months))) {
-            throw new \InvalidArgumentException("Vous avez spécifié plusieurs fois le même mois.");
+            $errorMessageString = implode(" ", $errorMessages);
+            throw new \InvalidArgumentException($errorMessageString);
         }
 
         $this->em->persist($advice);

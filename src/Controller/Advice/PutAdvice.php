@@ -13,13 +13,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[AsController]
 final class PutAdvice{
 
     public function __construct(
         private SerializerInterface $serializer,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private ValidatorInterface $validator
     )
     {
     }
@@ -29,16 +31,15 @@ final class PutAdvice{
     public function __invoke(Request $request, Advice $currentAdvice): JsonResponse
     {        
         $updatedAdvice = $this->serializer->deserialize($request->getContent(), Advice::class, 'json', [AbstractNormalizer::OBJECT_TO_POPULATE => $currentAdvice, 'groups' => 'getAdvice'],);
-        $months = $updatedAdvice->getMonths();
-        
-        foreach ($months as $month) {
-            if ($month < 1 || $month > 12) {
-                throw new \InvalidArgumentException("Le mois $month n'est pas valide. Les mois doivent être des nombres entre 1 et 12.");
+        $errors = $this->validator->validate($updatedAdvice);
+    
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = $error->getMessage();
             }
-        }
-
-        if (count($months) !== count(array_unique($months))) {
-            throw new \InvalidArgumentException("Vous avez spécifié plusieurs fois le même mois.");
+            $errorMessageString = implode(" ", $errorMessages);
+            throw new \InvalidArgumentException($errorMessageString);
         }
         
         $this->em->persist($updatedAdvice);

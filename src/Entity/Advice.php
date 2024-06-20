@@ -23,7 +23,10 @@ class Advice
 
     #[ORM\Column(type: Types::JSON)]
     #[Assert\NotBlank]
-    #[Assert\Json()]
+    #[Assert\All([
+        new Assert\Range(min: 1, max: 12, notInRangeMessage: "Vous avez rentré un mois non-valide.")
+    ])]
+    #[Assert\Unique(message: 'Il ne peut pas y avoir de valeurs dupliquées.')]
     #[Groups(["getAdvice"])]
     private array $months = [];
 
